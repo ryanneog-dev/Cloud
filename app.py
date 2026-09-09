@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
@@ -93,6 +93,111 @@ def delete(sno):
 # This is useful for this small hackathon project.
 with app.app_context():
     db.create_all()
+
+
+
+# REST API - Get all projects
+@app.route("/api/projects", methods=["GET"])
+def api_get_projects():
+    projects = Projects.query.all()
+
+    return jsonify([
+        {
+            "sno": project.sno,
+            "title": project.title,
+            "desc": project.desc,
+            "date_created": project.date_created.isoformat()
+        }
+        for project in projects
+    ])
+
+
+# REST API - Get one project
+@app.route("/api/projects/<int:sno>", methods=["GET"])
+def api_get_project(sno):
+    project = Projects.query.filter_by(sno=sno).first()
+
+    if project is None:
+        return jsonify({"error": "Project not found"}), 404
+
+    return jsonify({
+        "sno": project.sno,
+        "title": project.title,
+        "desc": project.desc,
+        "date_created": project.date_created.isoformat()
+    })
+
+
+# REST API - Create project
+@app.route("/api/projects", methods=["POST"])
+def api_create_project():
+    data = request.get_json(silent=True)
+
+    if not data or not data.get("title") or not data.get("desc"):
+        return jsonify({"error": "Title and description are required"}), 400
+
+    project = Projects(
+        title=data["title"],
+        desc=data["desc"]
+    )
+
+    db.session.add(project)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Project created successfully",
+        "project": {
+            "sno": project.sno,
+            "title": project.title,
+            "desc": project.desc,
+            "date_created": project.date_created.isoformat()
+        }
+    }), 201
+
+
+# REST API - Update project
+@app.route("/api/projects/<int:sno>", methods=["PUT"])
+def api_update_project(sno):
+    project = Projects.query.filter_by(sno=sno).first()
+
+    if project is None:
+        return jsonify({"error": "Project not found"}), 404
+
+    data = request.get_json(silent=True)
+
+    if not data or not data.get("title") or not data.get("desc"):
+        return jsonify({"error": "Title and description are required"}), 400
+
+    project.title = data["title"]
+    project.desc = data["desc"]
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Project updated successfully",
+        "project": {
+            "sno": project.sno,
+            "title": project.title,
+            "desc": project.desc,
+            "date_created": project.date_created.isoformat()
+        }
+    })
+
+
+# REST API - Delete project
+@app.route("/api/projects/<int:sno>", methods=["DELETE"])
+def api_delete_project(sno):
+    project = Projects.query.filter_by(sno=sno).first()
+
+    if project is None:
+        return jsonify({"error": "Project not found"}), 404
+
+    db.session.delete(project)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Project deleted successfully"
+    })
 
 
 if __name__ == "__main__":

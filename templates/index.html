@@ -40,19 +40,19 @@
   </thead>
   <tbody>
     {% for projects in allProjects %}
-      <tr>
+    <tr>
       <th scope="row">{{loop.index}}</th>
       <td>{{projects.title}}</td>
       <td>{{projects.desc}}</td>
       <td>{{projects.date_created}}</td>
       <td>
-        <a href="/update/{{projects.sno}}"  class="btn btn-outline-primary btn-sm mx-1">Update</a>
-        <a href="/delete/{{projects.sno}}"  class="btn btn-outline-primary btn-sm mx-1">Delete</a>
+        <a href="/update/{{projects.sno}}" class="btn btn-outline-primary btn-sm mx-1">Update</a>
+        <a href="/delete/{{projects.sno}}" class="btn btn-outline-primary btn-sm mx-1">Delete</a>
       </td>
-    </tr>  
-    </tbody>
-</table>
+    </tr>
     {% endfor %}
+  </tbody>
+</table>
     {% endif %}
     
   
