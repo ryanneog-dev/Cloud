@@ -2,9 +2,16 @@ from flask import Flask, render_template, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
+import socket
 
 app = Flask(__name__)
 
+@app.route("/health/instance")
+def health_instance():
+    return jsonify({
+        "status": "healthy",
+        "instance": socket.gethostname()
+    })
 # Use Neon PostgreSQL on Vercel.
 # Fall back to local SQLite when DATABASE_URL is not set.
 database_url = os.environ.get("DATABASE_URL", "sqlite:///Projects.db")
