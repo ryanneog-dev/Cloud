@@ -3,14 +3,14 @@
 {% block body %}
   
 
-  <div class="container mb-3">
+  {% if user and user.role in ['supervisor', 'admin'] %}<div class="container mb-3">
     <h2>Add your Project</h2>
     <form action = "/" method="POST">
   <div class="mb-3">
     <label for="title" class="form-label">Project Title</label>
     <input type="text" class="form-control" name="title" id="title" aria-describedby="emailHelp">
     
-  </div>
+  </div>{% else %}<div class="container mt-3 alert alert-info">Sign in as a supervisor to add, update, or delete projects.</div>{% endif %}
   <div class="mb-3">
     <label for="desc" class="form-label">Project description</label>
     <input type="text" class="form-control" name="desc" id="desc">
@@ -46,8 +46,8 @@
       <td>{{projects.desc}}</td>
       <td>{{projects.date_created}}</td>
       <td>
-        <a href="/update/{{projects.sno}}" class="btn btn-outline-primary btn-sm mx-1">Update</a>
-        <a href="/delete/{{projects.sno}}" class="btn btn-outline-primary btn-sm mx-1">Delete</a>
+        {% if user and user.role in ['supervisor', 'admin'] %}<a href="/update/{{projects.sno}}" class="btn btn-outline-primary btn-sm mx-1">Update</a>
+        <form action="/delete/{{projects.sno}}" method="POST" class="d-inline"><button class="btn btn-outline-danger btn-sm">Delete</button></form>{% endif %}
       </td>
     </tr>
     {% endfor %}

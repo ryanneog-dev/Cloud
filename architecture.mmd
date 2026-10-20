@@ -1,0 +1,9 @@
+flowchart LR
+  Browser[Project Tracker frontend] -->|HTTP :8080| N[Nginx :8080]
+  N --> B1[backend1 Flask/Gunicorn :5000]
+  N --> B2[backend2 Flask/Gunicorn :5000]
+  N --> B3[backend3 Flask/Gunicorn :5000]
+  B1 & B2 & B3 -->|TLS PostgreSQL| Neon[(Neon PostgreSQL cloud database)]
+  Render[Render hosting from Assignment 1] --> Neon
+  Burst[Cloud bursting: Render autoscaling/edge CDN]:::burst --> N
+  classDef burst fill:#f9b233,stroke:#333,stroke-width:2px

@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block body %}
+<main class="container mt-4" style="max-width: 520px"><h2>Supervisor login</h2>
+{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+<form method="post"><div class="mb-3"><label>Username</label><input class="form-control" name="username" required></div><div class="mb-3"><label>Password</label><input class="form-control" type="password" name="password" required></div><div class="mb-3"><label>Authenticator code</label><input class="form-control" inputmode="numeric" name="totp" required></div><button class="btn btn-primary">Sign in</button></form></main>
+{% endblock %}
